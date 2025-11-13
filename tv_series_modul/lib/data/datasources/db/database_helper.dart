@@ -43,47 +43,41 @@ class DatabaseHelper {
     ''');
   }
 
-  Future<int> insertWatchlist(m) async {
+  Future<int> insertWatchlist(TvSeriesTable tvSeriesTable) async {
     final db = await database;
-    var values;
-    if (m is TvSeriesTable) {
-      values = m.toMap();
-    } else {
-      values = m.toJson();
-    }
-    return await db!.insert(_tblWatchlist, values);
+    return await db!.insert(_tblWatchlist, tvSeriesTable.toMap());
   }
 
-  Future<int> removeWatchlist(movie) async {
+  Future<int> removeWatchlist(TvSeriesTable tvSeriesTable) async {
     final db = await database;
     return await db!.delete(
       _tblWatchlist,
       where: 'id = ?',
-      whereArgs: [movie.id],
+      whereArgs: [tvSeriesTable.id],
     );
   }
 
-  Future<Map<String, dynamic>?> getMovieById(int id) async {
-    final db = await database;
-    final results = await db!.query(
-      _tblWatchlist,
-      where: 'id = ?',
-      whereArgs: [id],
-    );
-
-    if (results.isNotEmpty) {
-      return results.first;
-    } else {
-      return null;
-    }
-  }
-
-  Future<List<Map<String, dynamic>>> getWatchlistMovies() async {
-    final db = await database;
-    final List<Map<String, dynamic>> results = await db!.query(_tblWatchlist, where: 'title IS NOT NULL');
-
-    return results;
-  }
+  // Future<Map<String, dynamic>?> getMovieById(int id) async {
+  //   final db = await database;
+  //   final results = await db!.query(
+  //     _tblWatchlist,
+  //     where: 'id = ?',
+  //     whereArgs: [id],
+  //   );
+  //
+  //   if (results.isNotEmpty) {
+  //     return results.first;
+  //   } else {
+  //     return null;
+  //   }
+  // }
+  //
+  // Future<List<Map<String, dynamic>>> getWatchlistMovies() async {
+  //   final db = await database;
+  //   final List<Map<String, dynamic>> results = await db!.query(_tblWatchlist, where: 'title IS NOT NULL');
+  //
+  //   return results;
+  // }
 
   Future<Map<String, dynamic>?> getTvSeriesById(int id) async {
     final db = await database;

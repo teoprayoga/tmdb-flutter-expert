@@ -1,10 +1,11 @@
 import 'dart:io';
+
 import 'package:dartz/dartz.dart';
-import 'package:ditonton_tv_series/common/exception.dart';
-import 'package:ditonton_tv_series/common/failure.dart';
-import 'package:ditonton_tv_series/data/repositories/tv_series_repository_impl.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
+import 'package:tv_series_modul/common/exception.dart';
+import 'package:tv_series_modul/common/failure.dart';
+import 'package:tv_series_modul/data/repositories/tv_series_repository_impl.dart';
 
 import '../../dummy_data/dummy_objects.dart';
 import '../../helpers/test_helper.mocks.dart';
@@ -24,11 +25,9 @@ void main() {
   });
 
   group('Get Popular TV Series', () {
-    test('should return remote data when the call to remote data source is successful',
-        () async {
+    test('should return remote data when the call to remote data source is successful', () async {
       // arrange
-      when(mockRemoteDataSource.getPopularTvSeries())
-          .thenAnswer((_) async => [testTvSeriesModel]);
+      when(mockRemoteDataSource.getPopularTvSeries()).thenAnswer((_) async => [testTvSeriesModel]);
       // act
       final result = await repository.getPopularTvSeries();
       // assert
@@ -37,12 +36,9 @@ void main() {
       expect(resultList, testTvSeriesList);
     });
 
-    test(
-        'should return server failure when the call to remote data source is unsuccessful',
-        () async {
+    test('should return server failure when the call to remote data source is unsuccessful', () async {
       // arrange
-      when(mockRemoteDataSource.getPopularTvSeries())
-          .thenThrow(ServerException('Server Error'));
+      when(mockRemoteDataSource.getPopularTvSeries()).thenThrow(ServerException('Server Error'));
       // act
       final result = await repository.getPopularTvSeries();
       // assert
@@ -50,9 +46,7 @@ void main() {
       expect(result, equals(const Left(ServerFailure('Server Error'))));
     });
 
-    test(
-        'should return connection failure when the device is not connected to internet',
-        () async {
+    test('should return connection failure when the device is not connected to internet', () async {
       // arrange
       when(mockRemoteDataSource.getPopularTvSeries())
           .thenThrow(const SocketException('Failed to connect to the network'));
@@ -60,19 +54,16 @@ void main() {
       final result = await repository.getPopularTvSeries();
       // assert
       verify(mockRemoteDataSource.getPopularTvSeries());
-      expect(result,
-          equals(const Left(ConnectionFailure('Failed to connect to the network'))));
+      expect(result, equals(const Left(ConnectionFailure('Failed to connect to the network'))));
     });
   });
 
   group('Get TV Series Detail', () {
     const tId = 1;
 
-    test('should return TV Series data when the call to remote data source is successful',
-        () async {
+    test('should return TV Series data when the call to remote data source is successful', () async {
       // arrange
-      when(mockRemoteDataSource.getTvSeriesDetail(tId))
-          .thenAnswer((_) async => testTvSeriesDetailModel);
+      when(mockRemoteDataSource.getTvSeriesDetail(tId)).thenAnswer((_) async => testTvSeriesDetailModel);
       // act
       final result = await repository.getTvSeriesDetail(tId);
       // assert
@@ -80,11 +71,9 @@ void main() {
       expect(result, equals(Right(testTvSeriesDetail)));
     });
 
-    test('should return Server Failure when the call to remote data source is unsuccessful',
-        () async {
+    test('should return Server Failure when the call to remote data source is unsuccessful', () async {
       // arrange
-      when(mockRemoteDataSource.getTvSeriesDetail(tId))
-          .thenThrow(ServerException('Server Error'));
+      when(mockRemoteDataSource.getTvSeriesDetail(tId)).thenThrow(ServerException('Server Error'));
       // act
       final result = await repository.getTvSeriesDetail(tId);
       // assert

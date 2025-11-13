@@ -1,7 +1,7 @@
-import 'package:ditonton_tv_series/data/models/tv_series_detail_model.dart';
-import 'package:ditonton_tv_series/data/models/tv_series_model.dart';
-import 'package:ditonton_tv_series/domain/entities/tv_series.dart';
-import 'package:ditonton_tv_series/domain/entities/tv_series_detail.dart';
+import 'package:tv_series_modul/data/models/tv_series_detail_model.dart';
+import 'package:tv_series_modul/data/models/tv_series_model.dart';
+import 'package:tv_series_modul/domain/entities/tv_series.dart';
+import 'package:tv_series_modul/domain/entities/tv_series_detail.dart';
 
 final testTvSeriesModel = TvSeriesModel(
   id: 1,

@@ -1,7 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:ditonton_tv_series/presentation/widgets/tv_series_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:tv_series_modul/presentation/widgets/tv_series_card.dart';
 
 import '../../dummy_data/dummy_objects.dart';
 
@@ -14,8 +14,7 @@ void main() {
     );
   }
 
-  testWidgets('TvSeriesCard should display image and be tappable',
-      (WidgetTester tester) async {
+  testWidgets('TvSeriesCard should display image and be tappable', (WidgetTester tester) async {
     // Build TvSeriesCard widget
     await tester.pumpWidget(
       makeTestableWidget(TvSeriesCard(testTvSeries)),

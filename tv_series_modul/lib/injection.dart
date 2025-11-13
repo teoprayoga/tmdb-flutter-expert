@@ -2,7 +2,7 @@ import 'package:get_it/get_it.dart';
 import 'package:http/http.dart' as http;
 import 'package:http_interceptor_plus/http_interceptor_plus.dart';
 
-import 'data/datasources/db/database_helper.dart';
+import 'data/datasources/db/database_helper.dart' as tv_db;
 import 'data/datasources/tv_series_local_data_source.dart';
 import 'data/datasources/tv_series_remote_data_source.dart';
 import 'data/repositories/tv_series_repository_impl.dart';
@@ -84,7 +84,7 @@ void init({GetIt? l}) {
   );
 
   // Helper
-  locator.registerLazySingleton<DatabaseHelper>(() => DatabaseHelper());
+  locator.registerLazySingleton<tv_db.DatabaseHelper>(() => tv_db.DatabaseHelper());
 
   // External
   locator.registerLazySingleton(() => LoggingMiddleware(http.Client()) as http.Client);

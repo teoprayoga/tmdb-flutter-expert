@@ -1,7 +1,7 @@
 import 'dart:async';
 
+import 'package:ditonton/data/models/movie_table.dart';
 import 'package:sqflite/sqflite.dart';
-import 'package:tv_series_modul/data/models/tv_series_table.dart';
 
 class DatabaseHelper {
   static DatabaseHelper? _databaseHelper;
@@ -42,23 +42,17 @@ class DatabaseHelper {
     ''');
   }
 
-  Future<int> insertWatchlist(m) async {
+  Future<int> insertWatchlist(MovieTable movieTable) async {
     final db = await database;
-    var values;
-    if (m is TvSeriesTable) {
-      values = m.toMap();
-    } else {
-      values = m.toJson();
-    }
-    return await db!.insert(_tblWatchlist, values);
+    return await db!.insert(_tblWatchlist, movieTable.toJson());
   }
 
-  Future<int> removeWatchlist(movie) async {
+  Future<int> removeWatchlist(MovieTable movieTable) async {
     final db = await database;
     return await db!.delete(
       _tblWatchlist,
       where: 'id = ?',
-      whereArgs: [movie.id],
+      whereArgs: [movieTable.id],
     );
   }
 
@@ -84,24 +78,24 @@ class DatabaseHelper {
     return results;
   }
 
-  Future<Map<String, dynamic>?> getTvSeriesById(int id) async {
-    final db = await database;
-    final results = await db!.query(
-      _tblWatchlist,
-      where: 'id = ?',
-      whereArgs: [id],
-    );
-
-    if (results.isNotEmpty) {
-      return results.first;
-    } else {
-      return null;
-    }
-  }
-
-  Future<List<Map<String, dynamic>>> getWatchlistTvSeries() async {
-    final db = await database;
-    final List<Map<String, dynamic>> results = await db!.query(_tblWatchlist, where: 'name IS NOT NULL');
-    return results;
-  }
+  // Future<Map<String, dynamic>?> getTvSeriesById(int id) async {
+  //   final db = await database;
+  //   final results = await db!.query(
+  //     _tblWatchlist,
+  //     where: 'id = ?',
+  //     whereArgs: [id],
+  //   );
+  //
+  //   if (results.isNotEmpty) {
+  //     return results.first;
+  //   } else {
+  //     return null;
+  //   }
+  // }
+  //
+  // Future<List<Map<String, dynamic>>> getWatchlistTvSeries() async {
+  //   final db = await database;
+  //   final List<Map<String, dynamic>> results = await db!.query(_tblWatchlist, where: 'name IS NOT NULL');
+  //   return results;
+  // }
 }
