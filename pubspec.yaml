@@ -35,6 +35,11 @@ dependencies:
   sqflite: ^2.3.3+1
   path_provider: ^2.1.4
   http_interceptor_plus: ^0.0.1
+  toggle_switch: ^2.3.0
+  get: ^4.7.2
+  tv_series_modul:
+    path: ./tv_series_modul
+  flutter_bloc: ^8.1.6
 
 dev_dependencies:
   mockito: ^5.0.8

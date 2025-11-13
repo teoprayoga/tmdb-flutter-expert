@@ -1,4 +1,3 @@
-import 'package:ditonton/data/datasources/db/database_helper.dart';
 import 'package:ditonton/data/datasources/movie_local_data_source.dart';
 import 'package:ditonton/data/datasources/movie_remote_data_source.dart';
 import 'package:ditonton/data/repositories/movie_repository_impl.dart';
@@ -22,10 +21,16 @@ import 'package:ditonton/presentation/provider/watchlist_movie_notifier.dart';
 import 'package:get_it/get_it.dart';
 import 'package:http/http.dart' as http;
 import 'package:http_interceptor_plus/http_interceptor_plus.dart';
+import 'package:tv_series_modul/injection.dart' as di_tv;
+
+import 'data/datasources/db/database_helper.dart';
 
 final locator = GetIt.instance;
 
 void init() {
+  locator.enableRegisteringMultipleInstancesOfOneType();
+  di_tv.init(l: locator);
+
   // provider
   locator.registerFactory(
     () => MovieListNotifier(
