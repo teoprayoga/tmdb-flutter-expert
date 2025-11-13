@@ -1,4 +1,5 @@
 import 'package:ditonton/domain/entities/genre.dart';
+import 'package:ditonton/domain/entities/season.dart';
 import 'package:equatable/equatable.dart';
 
 class MovieDetail extends Equatable {
@@ -15,6 +16,14 @@ class MovieDetail extends Equatable {
     required this.title,
     required this.voteAverage,
     required this.voteCount,
+    this.status,
+    this.seasons,
+    this.numberOfSeasons = 0,
+    this.numberOfEpisodes = 0,
+    this.type = '',
+    this.inProduction = false,
+    this.firstAirDate,
+    this.lastAirDate,
   });
 
   final bool adult;
@@ -29,6 +38,14 @@ class MovieDetail extends Equatable {
   final String title;
   final double voteAverage;
   final int voteCount;
+  final List<Season>? seasons;
+  final int numberOfSeasons;
+  final int numberOfEpisodes;
+  final String type;
+  final bool inProduction;
+  final String? firstAirDate;
+  final String? lastAirDate;
+  final String? status;
 
   @override
   List<Object?> get props => [

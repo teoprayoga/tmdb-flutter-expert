@@ -1,10 +1,21 @@
 import 'package:ditonton/data/models/genre_model.dart';
 import 'package:ditonton/data/models/movie_detail_model.dart';
+import 'package:ditonton/data/models/season_model.dart';
 import 'package:ditonton/domain/entities/movie_detail.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   final tGenreModel = GenreModel(id: 1, name: "Action");
+
+  final tSeasonModel = SeasonModel(
+    airDate: "2021-01-01",
+    episodeCount: 10,
+    id: 1,
+    name: "Season 1",
+    overview: "The first season",
+    posterPath: "/season.jpg",
+    seasonNumber: 1,
+  );
 
   final tMovieDetailResponse = MovieDetailResponse(
     adult: false,
@@ -28,6 +39,7 @@ void main() {
     video: false,
     voteAverage: 7.8,
     voteCount: 1000,
+    seasons: null, // ⭐ Added seasons field
   );
 
   group('MovieDetailResponse', () {
@@ -37,7 +49,7 @@ void main() {
     });
 
     group('fromJson', () {
-      test('should return a valid model from JSON', () {
+      test('should return a valid model from JSON without seasons', () {
         // arrange
         final Map<String, dynamic> jsonMap = {
           "adult": false,
@@ -70,6 +82,56 @@ void main() {
 
         // assert
         expect(result, equals(tMovieDetailResponse));
+        expect(result.seasons, null);
+      });
+
+      test('should return a valid model from JSON with seasons', () {
+        // arrange
+        final Map<String, dynamic> jsonMap = {
+          "adult": false,
+          "backdrop_path": "/path.jpg",
+          "budget": 100000000,
+          "genres": [
+            {"id": 1, "name": "Action"}
+          ],
+          "homepage": "https://example.com",
+          "id": 1,
+          "imdb_id": "tt1234567",
+          "original_language": "en",
+          "original_title": "Original Title",
+          "overview": "Overview",
+          "popularity": 123.456,
+          "poster_path": "/poster.jpg",
+          "release_date": "2021-01-01",
+          "revenue": 200000000,
+          "runtime": 120,
+          "status": "Released",
+          "tagline": "Tagline",
+          "title": "Title",
+          "video": false,
+          "vote_average": 7.8,
+          "vote_count": 1000,
+          "seasons": [
+            {
+              "air_date": "2021-01-01",
+              "episode_count": 10,
+              "id": 1,
+              "name": "Season 1",
+              "overview": "The first season",
+              "poster_path": "/season.jpg",
+              "season_number": 1,
+            }
+          ],
+        };
+
+        // act
+        final result = MovieDetailResponse.fromJson(jsonMap);
+
+        // assert
+        expect(result.seasons, isNotNull);
+        expect(result.seasons!.length, 1);
+        expect(result.seasons![0].seasonNumber, 1);
+        expect(result.seasons![0].episodeCount, 10);
       });
 
       test('should handle nullable fields correctly', () {
@@ -96,6 +158,7 @@ void main() {
           "video": false,
           "vote_average": 0.0,
           "vote_count": 0,
+          "seasons": null,
         };
 
         // act
@@ -105,6 +168,7 @@ void main() {
         expect(result.backdropPath, null);
         expect(result.imdbId, null);
         expect(result.genres, []);
+        expect(result.seasons, null);
       });
 
       test('should parse multiple genres correctly', () {
@@ -148,6 +212,66 @@ void main() {
         expect(result.genres[1].name, "Drama");
         expect(result.genres[2].id, 3);
         expect(result.genres[2].name, "Thriller");
+      });
+
+      test('should parse multiple seasons correctly', () {
+        // arrange
+        final Map<String, dynamic> jsonMap = {
+          "adult": false,
+          "backdrop_path": "/path.jpg",
+          "budget": 100000000,
+          "genres": [
+            {"id": 1, "name": "Action"}
+          ],
+          "homepage": "https://example.com",
+          "id": 1,
+          "imdb_id": "tt1234567",
+          "original_language": "en",
+          "original_title": "Original Title",
+          "overview": "Overview",
+          "popularity": 123.456,
+          "poster_path": "/poster.jpg",
+          "release_date": "2021-01-01",
+          "revenue": 200000000,
+          "runtime": 120,
+          "status": "Released",
+          "tagline": "Tagline",
+          "title": "Title",
+          "video": false,
+          "vote_average": 7.8,
+          "vote_count": 1000,
+          "seasons": [
+            {
+              "air_date": "2021-01-01",
+              "episode_count": 10,
+              "id": 1,
+              "name": "Season 1",
+              "overview": "The first season",
+              "poster_path": "/season1.jpg",
+              "season_number": 1,
+            },
+            {
+              "air_date": "2022-01-01",
+              "episode_count": 12,
+              "id": 2,
+              "name": "Season 2",
+              "overview": "The second season",
+              "poster_path": "/season2.jpg",
+              "season_number": 2,
+            }
+          ],
+        };
+
+        // act
+        final result = MovieDetailResponse.fromJson(jsonMap);
+
+        // assert
+        expect(result.seasons, isNotNull);
+        expect(result.seasons!.length, 2);
+        expect(result.seasons![0].seasonNumber, 1);
+        expect(result.seasons![0].episodeCount, 10);
+        expect(result.seasons![1].seasonNumber, 2);
+        expect(result.seasons![1].episodeCount, 12);
       });
 
       test('should convert popularity to double correctly', () {
@@ -217,8 +341,51 @@ void main() {
           "video": false,
           "vote_average": 7.8,
           "vote_count": 1000,
+          "seasons": null, // ⭐ Added seasons field
+          "number_of_seasons": 0,
+          "number_of_episodes": 0,
+          "type": '',
+          "in_production": false,
+          "first_air_date": null,
+          "last_air_date": null,
         };
         expect(result, equals(expectedJsonMap));
+      });
+
+      test('should return a JSON map with seasons data', () {
+        // arrange
+        final movieWithSeasons = MovieDetailResponse(
+          adult: false,
+          backdropPath: "/path.jpg",
+          budget: 100000000,
+          genres: [tGenreModel],
+          homepage: "https://example.com",
+          id: 1,
+          imdbId: "tt1234567",
+          originalLanguage: "en",
+          originalTitle: "Original Title",
+          overview: "Overview",
+          popularity: 123.456,
+          posterPath: "/poster.jpg",
+          releaseDate: "2021-01-01",
+          revenue: 200000000,
+          runtime: 120,
+          status: "Released",
+          tagline: "Tagline",
+          title: "Title",
+          video: false,
+          voteAverage: 7.8,
+          voteCount: 1000,
+          seasons: [tSeasonModel],
+        );
+
+        // act
+        final result = movieWithSeasons.toJson();
+
+        // assert
+        expect(result["seasons"], isNotNull);
+        expect(result["seasons"], isA<List>());
+        expect((result["seasons"] as List).length, 1);
       });
 
       test('should handle nullable fields in toJson', () {
@@ -245,6 +412,7 @@ void main() {
           video: false,
           voteAverage: 0.0,
           voteCount: 0,
+          seasons: null,
         );
 
         // act
@@ -254,6 +422,7 @@ void main() {
         expect(result["backdrop_path"], null);
         expect(result["imdb_id"], null);
         expect(result["genres"], []);
+        expect(result["seasons"], null);
       });
 
       test('should convert to JSON and back to model correctly', () {
@@ -263,6 +432,43 @@ void main() {
 
         // assert
         expect(result, equals(tMovieDetailResponse));
+      });
+
+      test('should convert to JSON and back with seasons correctly', () {
+        // arrange
+        final movieWithSeasons = MovieDetailResponse(
+          adult: false,
+          backdropPath: "/path.jpg",
+          budget: 100000000,
+          genres: [tGenreModel],
+          homepage: "https://example.com",
+          id: 1,
+          imdbId: "tt1234567",
+          originalLanguage: "en",
+          originalTitle: "Original Title",
+          overview: "Overview",
+          popularity: 123.456,
+          posterPath: "/poster.jpg",
+          releaseDate: "2021-01-01",
+          revenue: 200000000,
+          runtime: 120,
+          status: "Released",
+          tagline: "Tagline",
+          title: "Title",
+          video: false,
+          voteAverage: 7.8,
+          voteCount: 1000,
+          seasons: [tSeasonModel],
+        );
+
+        // act
+        final json = movieWithSeasons.toJson();
+        final result = MovieDetailResponse.fromJson(json);
+
+        // assert
+        expect(result, equals(movieWithSeasons));
+        expect(result.seasons, isNotNull);
+        expect(result.seasons!.length, 1);
       });
 
       test('should have all required keys in JSON output', () {
@@ -291,6 +497,7 @@ void main() {
         expect(result.containsKey("video"), true);
         expect(result.containsKey("vote_average"), true);
         expect(result.containsKey("vote_count"), true);
+        expect(result.containsKey("seasons"), true); // ⭐ Added seasons key check
       });
     });
 
@@ -312,6 +519,50 @@ void main() {
         expect(result.title, "Title");
         expect(result.voteAverage, 7.8);
         expect(result.voteCount, 1000);
+      });
+
+      test('should return empty list for seasons when null', () {
+        // act
+        final result = tMovieDetailResponse.toEntity();
+
+        // assert
+        expect(result.seasons, []);
+      });
+
+      test('should map seasons to entities correctly', () {
+        // arrange
+        final movieWithSeasons = MovieDetailResponse(
+          adult: false,
+          backdropPath: "/path.jpg",
+          budget: 100000000,
+          genres: [tGenreModel],
+          homepage: "https://example.com",
+          id: 1,
+          imdbId: "tt1234567",
+          originalLanguage: "en",
+          originalTitle: "Original Title",
+          overview: "Overview",
+          popularity: 123.456,
+          posterPath: "/poster.jpg",
+          releaseDate: "2021-01-01",
+          revenue: 200000000,
+          runtime: 120,
+          status: "Released",
+          tagline: "Tagline",
+          title: "Title",
+          video: false,
+          voteAverage: 7.8,
+          voteCount: 1000,
+          seasons: [tSeasonModel],
+        );
+
+        // act
+        final result = movieWithSeasons.toEntity();
+
+        // assert
+        expect(result.seasons?.length, 1);
+        expect(result.seasons?[0].seasonNumber, 1);
+        expect(result.seasons?[0].episodeCount, 10);
       });
 
       test('should map genres to entities correctly', () {
@@ -362,6 +613,61 @@ void main() {
         expect(result.genres[1].id, 2);
       });
 
+      test('should handle multiple seasons in toEntity', () {
+        // arrange
+        final season1 = SeasonModel(
+          airDate: "2021-01-01",
+          episodeCount: 10,
+          id: 1,
+          name: "Season 1",
+          overview: "First season",
+          posterPath: "/s1.jpg",
+          seasonNumber: 1,
+        );
+        final season2 = SeasonModel(
+          airDate: "2022-01-01",
+          episodeCount: 12,
+          id: 2,
+          name: "Season 2",
+          overview: "Second season",
+          posterPath: "/s2.jpg",
+          seasonNumber: 2,
+        );
+
+        final movieWithMultipleSeasons = MovieDetailResponse(
+          adult: false,
+          backdropPath: "/path.jpg",
+          budget: 100000000,
+          genres: [tGenreModel],
+          homepage: "https://example.com",
+          id: 1,
+          imdbId: "tt1234567",
+          originalLanguage: "en",
+          originalTitle: "Original Title",
+          overview: "Overview",
+          popularity: 123.456,
+          posterPath: "/poster.jpg",
+          releaseDate: "2021-01-01",
+          revenue: 200000000,
+          runtime: 120,
+          status: "Released",
+          tagline: "Tagline",
+          title: "Title",
+          video: false,
+          voteAverage: 7.8,
+          voteCount: 1000,
+          seasons: [season1, season2],
+        );
+
+        // act
+        final result = movieWithMultipleSeasons.toEntity();
+
+        // assert
+        expect(result.seasons?.length, 2);
+        expect(result.seasons?[0].seasonNumber, 1);
+        expect(result.seasons?[1].seasonNumber, 2);
+      });
+
       test('should handle nullable fields in toEntity', () {
         // arrange
         final movieWithNulls = MovieDetailResponse(
@@ -386,6 +692,7 @@ void main() {
           video: false,
           voteAverage: 0.0,
           voteCount: 0,
+          seasons: null,
         );
 
         // act
@@ -394,6 +701,7 @@ void main() {
         // assert
         expect(result.backdropPath, null);
         expect(result.genres, []);
+        expect(result.seasons, []);
       });
     });
 
