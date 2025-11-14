@@ -85,7 +85,7 @@ void main() {
         (WidgetTester tester) async {
       // arrange
       when(() => mockBloc.state).thenReturn(
-        TvSeriesDetailState.initial().copyWith(isLoading: true),
+        const TvSeriesDetailState().copyWith(isLoading: true),
       );
 
       // act
@@ -99,7 +99,7 @@ void main() {
         (WidgetTester tester) async {
       // arrange
       when(() => mockBloc.state).thenReturn(
-        TvSeriesDetailState.initial().copyWith(message: 'Error message'),
+        const TvSeriesDetailState().copyWith(message: 'Error message'),
       );
 
       // act
@@ -113,7 +113,7 @@ void main() {
         (WidgetTester tester) async {
       // arrange
       when(() => mockBloc.state).thenReturn(
-        TvSeriesDetailState.initial().copyWith(
+        const TvSeriesDetailState().copyWith(
           tvSeriesDetail: tTvSeriesDetail,
           recommendations: [],
           isAddedToWatchlist: false,
@@ -132,7 +132,7 @@ void main() {
         (WidgetTester tester) async {
       // arrange
       when(() => mockBloc.state).thenReturn(
-        TvSeriesDetailState.initial().copyWith(
+        const TvSeriesDetailState().copyWith(
           tvSeriesDetail: tTvSeriesDetail,
           recommendations: [],
           isAddedToWatchlist: false,
@@ -151,7 +151,7 @@ void main() {
         (WidgetTester tester) async {
       // arrange
       when(() => mockBloc.state).thenReturn(
-        TvSeriesDetailState.initial().copyWith(
+        const TvSeriesDetailState().copyWith(
           tvSeriesDetail: tTvSeriesDetail,
           recommendations: [],
           isAddedToWatchlist: true,
@@ -169,7 +169,7 @@ void main() {
         (WidgetTester tester) async {
       // arrange
       when(() => mockBloc.state).thenReturn(
-        TvSeriesDetailState.initial().copyWith(
+        const TvSeriesDetailState().copyWith(
           tvSeriesDetail: tTvSeriesDetail,
           recommendations: [],
           isAddedToWatchlist: false,
@@ -188,7 +188,7 @@ void main() {
         (WidgetTester tester) async {
       // arrange
       when(() => mockBloc.state).thenReturn(
-        TvSeriesDetailState.initial().copyWith(
+        const TvSeriesDetailState().copyWith(
           tvSeriesDetail: tTvSeriesDetail,
           recommendations: [],
           isAddedToWatchlist: true,
@@ -209,17 +209,17 @@ void main() {
       whenListen(
         mockBloc,
         Stream.fromIterable([
-          TvSeriesDetailState.initial().copyWith(
+          const TvSeriesDetailState().copyWith(
             tvSeriesDetail: tTvSeriesDetail,
             recommendations: [],
           ),
-          TvSeriesDetailState.initial().copyWith(
+          const TvSeriesDetailState().copyWith(
             tvSeriesDetail: tTvSeriesDetail,
             recommendations: [],
             watchlistMessage: 'Added to Watchlist',
           ),
         ]),
-        initialState: TvSeriesDetailState.initial().copyWith(
+        initialState: const TvSeriesDetailState().copyWith(
           tvSeriesDetail: tTvSeriesDetail,
           recommendations: [],
         ),
@@ -238,7 +238,7 @@ void main() {
         (WidgetTester tester) async {
       // arrange
       when(() => mockBloc.state).thenReturn(
-        TvSeriesDetailState.initial().copyWith(
+        const TvSeriesDetailState().copyWith(
           tvSeriesDetail: tTvSeriesDetail,
           recommendations: [tTvSeries],
           isAddedToWatchlist: false,
@@ -256,7 +256,7 @@ void main() {
         (WidgetTester tester) async {
       // arrange
       when(() => mockBloc.state).thenReturn(
-        TvSeriesDetailState.initial().copyWith(
+        const TvSeriesDetailState().copyWith(
           tvSeriesDetail: tTvSeriesDetail,
           recommendations: [],
           isRecommendationsLoading: true,
@@ -274,7 +274,7 @@ void main() {
         (WidgetTester tester) async {
       // arrange
       when(() => mockBloc.state).thenReturn(
-        TvSeriesDetailState.initial().copyWith(
+        const TvSeriesDetailState().copyWith(
           tvSeriesDetail: tTvSeriesDetail,
           recommendations: [],
           recommendationsMessage: 'Failed to load recommendations',
@@ -292,7 +292,7 @@ void main() {
         (WidgetTester tester) async {
       // arrange
       when(() => mockBloc.state).thenReturn(
-        TvSeriesDetailState.initial().copyWith(
+        const TvSeriesDetailState().copyWith(
           tvSeriesDetail: tTvSeriesDetail,
           recommendations: [],
           isAddedToWatchlist: false,
@@ -310,7 +310,7 @@ void main() {
         (WidgetTester tester) async {
       // arrange
       when(() => mockBloc.state).thenReturn(
-        TvSeriesDetailState.initial().copyWith(
+        const TvSeriesDetailState().copyWith(
           tvSeriesDetail: tTvSeriesDetail,
           recommendations: [],
         ),
@@ -328,7 +328,7 @@ void main() {
         (WidgetTester tester) async {
       // arrange
       when(() => mockBloc.state).thenReturn(
-        TvSeriesDetailState.initial().copyWith(
+        const TvSeriesDetailState().copyWith(
           tvSeriesDetail: tTvSeriesDetail,
           recommendations: [],
         ),
@@ -345,7 +345,7 @@ void main() {
         (WidgetTester tester) async {
       // arrange
       when(() => mockBloc.state).thenReturn(
-        TvSeriesDetailState.initial().copyWith(
+        const TvSeriesDetailState().copyWith(
           tvSeriesDetail: tTvSeriesDetail,
           recommendations: [],
         ),
@@ -369,7 +369,7 @@ void main() {
         (WidgetTester tester) async {
       // arrange
       when(() => mockBloc.state).thenReturn(
-        TvSeriesDetailState.initial().copyWith(
+        const TvSeriesDetailState().copyWith(
           tvSeriesDetail: tTvSeriesDetail,
           recommendations: [],
         ),
@@ -386,7 +386,7 @@ void main() {
         (WidgetTester tester) async {
       // arrange
       when(() => mockBloc.state).thenReturn(
-        TvSeriesDetailState.initial(),
+        const TvSeriesDetailState(),
       );
 
       // act
