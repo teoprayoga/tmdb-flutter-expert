@@ -1,12 +1,13 @@
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
 import '../../domain/entities/tv_series.dart';
 import '../../domain/entities/tv_series_detail.dart';
 import '../../domain/usecases/get_tv_series_detail.dart';
 import '../../domain/usecases/get_tv_series_recommendations.dart';
 import '../../domain/usecases/get_watchlist_status.dart';
-import '../../domain/usecases/save_watchlist.dart';
 import '../../domain/usecases/remove_watchlist.dart';
+import '../../domain/usecases/save_watchlist.dart';
 
 // Events
 abstract class TvSeriesDetailEvent extends Equatable {
@@ -88,11 +89,9 @@ class TvSeriesDetailState extends Equatable {
       tvSeriesDetail: tvSeriesDetail ?? this.tvSeriesDetail,
       recommendations: recommendations ?? this.recommendations,
       isLoading: isLoading ?? this.isLoading,
-      isRecommendationsLoading:
-          isRecommendationsLoading ?? this.isRecommendationsLoading,
+      isRecommendationsLoading: isRecommendationsLoading ?? this.isRecommendationsLoading,
       message: message ?? this.message,
-      recommendationsMessage:
-          recommendationsMessage ?? this.recommendationsMessage,
+      recommendationsMessage: recommendationsMessage ?? this.recommendationsMessage,
       isAddedToWatchlist: isAddedToWatchlist ?? this.isAddedToWatchlist,
       watchlistMessage: watchlistMessage ?? this.watchlistMessage,
     );
@@ -112,8 +111,7 @@ class TvSeriesDetailState extends Equatable {
 }
 
 // BLoC
-class TvSeriesDetailBloc
-    extends Bloc<TvSeriesDetailEvent, TvSeriesDetailState> {
+class TvSeriesDetailBloc extends Bloc<TvSeriesDetailEvent, TvSeriesDetailState> {
   final GetTvSeriesDetail getTvSeriesDetail;
   final GetTvSeriesRecommendations getTvSeriesRecommendations;
   final GetWatchlistStatus getWatchlistStatus;
@@ -143,8 +141,7 @@ class TvSeriesDetailBloc
     ));
 
     final detailResult = await getTvSeriesDetail.execute(event.id);
-    final recommendationsResult =
-        await getTvSeriesRecommendations.execute(event.id);
+    final recommendationsResult = await getTvSeriesRecommendations.execute(event.id);
 
     detailResult.fold(
       (failure) => emit(state.copyWith(
@@ -176,7 +173,7 @@ class TvSeriesDetailBloc
     Emitter<TvSeriesDetailState> emit,
   ) async {
     final result = await saveWatchlist.execute(event.tvSeries);
-    
+
     result.fold(
       (failure) => emit(state.copyWith(watchlistMessage: failure.message)),
       (successMessage) => emit(state.copyWith(
@@ -193,7 +190,7 @@ class TvSeriesDetailBloc
     Emitter<TvSeriesDetailState> emit,
   ) async {
     final result = await removeWatchlist.execute(event.tvSeries);
-    
+
     result.fold(
       (failure) => emit(state.copyWith(watchlistMessage: failure.message)),
       (successMessage) => emit(state.copyWith(
@@ -210,6 +207,9 @@ class TvSeriesDetailBloc
     Emitter<TvSeriesDetailState> emit,
   ) async {
     final result = await getWatchlistStatus.execute(event.id);
-    emit(state.copyWith(isAddedToWatchlist: result));
+    emit(state.copyWith(
+      isAddedToWatchlist: result,
+      watchlistMessage: '',
+    ));
   }
 }
