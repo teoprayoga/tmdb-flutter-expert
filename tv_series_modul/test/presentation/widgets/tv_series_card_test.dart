@@ -130,5 +130,69 @@ void main() {
       // Verify margin
       expect(container.margin, const EdgeInsets.symmetric(horizontal: 4));
     });
+
+    // testWidgets('should navigate to detail page when tapped', (WidgetTester tester) async {
+    //   // Build TvSeriesCard widget
+    //   await tester.pumpWidget(
+    //     makeTestableWidget(TvSeriesCard(testTvSeries)),
+    //   );
+    //
+    //   // Find and tap the InkWell
+    //   final inkWellFinder = find.byType(InkWell);
+    //   expect(inkWellFinder, findsOneWidget);
+    //
+    //   await tester.tap(inkWellFinder);
+    //   await tester.pumpAndSettle();
+    //
+    //   // Verify navigation occurred by checking if TvSeriesDetailPage is present
+    //   expect(find.byType(TvSeriesDetailPage), findsOneWidget);
+    // });
+
+    testWidgets('should display error icon when image fails to load', (WidgetTester tester) async {
+      // Build TvSeriesCard widget
+      await tester.pumpWidget(
+        makeTestableWidget(TvSeriesCard(testTvSeries)),
+      );
+
+      // Get the CachedNetworkImage widget
+      final cachedImageWidget = tester.widget<CachedNetworkImage>(
+        find.byType(CachedNetworkImage),
+      );
+
+      // Call the errorWidget callback to cover line 31
+      final errorWidget = cachedImageWidget.errorWidget!(
+        tester.element(find.byType(CachedNetworkImage)),
+        'test-url',
+        Exception('Failed to load image'),
+      );
+
+      // Verify error widget returns an Icon
+      expect(errorWidget, isA<Icon>());
+      expect((errorWidget as Icon).icon, Icons.error);
+    });
+
+    testWidgets('should display CircularProgressIndicator as placeholder', (WidgetTester tester) async {
+      // Build TvSeriesCard widget
+      await tester.pumpWidget(
+        makeTestableWidget(TvSeriesCard(testTvSeries)),
+      );
+
+      // Get the CachedNetworkImage widget
+      final cachedImageWidget = tester.widget<CachedNetworkImage>(
+        find.byType(CachedNetworkImage),
+      );
+
+      // Call the placeholder callback
+      final placeholderWidget = cachedImageWidget.placeholder!(
+        tester.element(find.byType(CachedNetworkImage)),
+        'test-url',
+      );
+
+      // Verify placeholder contains CircularProgressIndicator
+      expect(placeholderWidget, isA<Center>());
+      // We can check if it contains CircularProgressIndicator by building it
+      await tester.pumpWidget(MaterialApp(home: Scaffold(body: placeholderWidget)));
+      expect(find.byType(CircularProgressIndicator), findsOneWidget);
+    });
   });
 }
