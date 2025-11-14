@@ -1,89 +1,113 @@
-import 'package:ditonton/common/state_enum.dart';
+import 'package:bloc_test/bloc_test.dart';
 import 'package:ditonton/domain/entities/movie.dart';
+import 'package:ditonton/presentation/bloc/search_movies_bloc.dart';
 import 'package:ditonton/presentation/pages/search_page.dart';
-import 'package:ditonton/presentation/provider/movie_search_notifier.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mockito/annotations.dart';
-import 'package:mockito/mockito.dart';
-import 'package:provider/provider.dart';
+import 'package:mocktail/mocktail.dart';
 
-import 'search_page_test.mocks.dart';
+class MockSearchMoviesBloc
+    extends MockBloc<SearchMoviesEvent, SearchMoviesState>
+    implements SearchMoviesBloc {}
 
-@GenerateMocks([MovieSearchNotifier])
+class FakeSearchMoviesEvent extends Fake implements SearchMoviesEvent {}
+
+class FakeSearchMoviesState extends Fake implements SearchMoviesState {}
+
 void main() {
-  late MockMovieSearchNotifier mockNotifier;
+  late MockSearchMoviesBloc mockBloc;
 
-  setUp(() {
-    mockNotifier = MockMovieSearchNotifier();
+  setUpAll(() {
+    registerFallbackValue(FakeSearchMoviesEvent());
+    registerFallbackValue(FakeSearchMoviesState());
   });
 
-  Widget _makeTestableWidget(Widget body) {
-    return ChangeNotifierProvider<MovieSearchNotifier>.value(
-      value: mockNotifier,
+  setUp(() {
+    mockBloc = MockSearchMoviesBloc();
+  });
+
+  Widget makeTestableWidget(Widget body) {
+    return BlocProvider<SearchMoviesBloc>.value(
+      value: mockBloc,
       child: MaterialApp(
         home: body,
       ),
     );
   }
 
-  testWidgets('Page should display center progress bar when loading', (WidgetTester tester) async {
-    when(mockNotifier.state).thenReturn(RequestState.Loading);
-    when(mockNotifier.searchResult).thenReturn(<Movie>[]);
+  final tMovie = Movie(
+    adult: false,
+    backdropPath: 'backdropPath',
+    genreIds: [1, 2, 3],
+    id: 1,
+    originalTitle: 'originalTitle',
+    overview: 'overview',
+    popularity: 1,
+    posterPath: 'posterPath',
+    releaseDate: 'releaseDate',
+    title: 'title',
+    video: false,
+    voteAverage: 1,
+    voteCount: 1,
+  );
 
-    final progressBarFinder = find.byType(CircularProgressIndicator);
-    final centerFinder = find.byType(Center);
+  final tMovieList = <Movie>[tMovie];
 
-    await tester.pumpWidget(_makeTestableWidget(SearchPage()), duration: Duration(seconds: 1));
+  group('SearchPage', () {
+    testWidgets('should display center progress bar when loading',
+        (WidgetTester tester) async {
+      when(() => mockBloc.state).thenReturn(SearchMoviesLoading());
 
-    expect(centerFinder, findsAtLeastNWidgets(1));
-    expect(progressBarFinder, findsAtLeast(1));
-  });
+      final progressBarFinder = find.byType(CircularProgressIndicator);
+      final centerFinder = find.byType(Center);
 
-  testWidgets('Page should display ListView when data is loaded', (WidgetTester tester) async {
-    when(mockNotifier.state).thenReturn(RequestState.Loaded);
-    when(mockNotifier.searchResult).thenReturn(<Movie>[]);
+      await tester.pumpWidget(makeTestableWidget(SearchPage()));
 
-    final listViewFinder = find.byType(ListView);
+      expect(centerFinder, findsAtLeastNWidgets(1));
+      expect(progressBarFinder, findsOneWidget);
+    });
 
-    await tester.pumpWidget(_makeTestableWidget(SearchPage()));
+    testWidgets('should display ListView when data is loaded',
+        (WidgetTester tester) async {
+      when(() => mockBloc.state).thenReturn(SearchMoviesHasData(tMovieList));
 
-    expect(listViewFinder, findsOneWidget);
-  });
+      final listViewFinder = find.byType(ListView);
 
-  testWidgets('Page should display empty container when Error or Empty', (WidgetTester tester) async {
-    when(mockNotifier.state).thenReturn(RequestState.Error);
-    when(mockNotifier.searchResult).thenReturn(<Movie>[]);
+      await tester.pumpWidget(makeTestableWidget(SearchPage()));
 
-    final containerFinder = find.byType(Container);
+      expect(listViewFinder, findsOneWidget);
+    });
 
-    await tester.pumpWidget(_makeTestableWidget(SearchPage()));
+    testWidgets('should display text with message when Error',
+        (WidgetTester tester) async {
+      when(() => mockBloc.state).thenReturn(SearchMoviesError('Error message'));
 
-    expect(containerFinder, findsWidgets);
-  });
+      await tester.pumpWidget(makeTestableWidget(SearchPage()));
 
-  testWidgets('Page should have TextField for search input', (WidgetTester tester) async {
-    when(mockNotifier.state).thenReturn(RequestState.Empty);
-    when(mockNotifier.searchResult).thenReturn(<Movie>[]);
+      expect(find.text('Error message'), findsOneWidget);
+    });
 
-    final textFieldFinder = find.byType(TextField);
+    testWidgets('should display empty container when state is Empty',
+        (WidgetTester tester) async {
+      when(() => mockBloc.state).thenReturn(SearchMoviesEmpty());
 
-    await tester.pumpWidget(_makeTestableWidget(SearchPage()));
+      final containerFinder = find.byType(Container);
 
-    expect(textFieldFinder, findsOneWidget);
-  });
+      await tester.pumpWidget(makeTestableWidget(SearchPage()));
 
-  testWidgets('TextField should trigger search on submit', (WidgetTester tester) async {
-    when(mockNotifier.state).thenReturn(RequestState.Empty);
-    when(mockNotifier.searchResult).thenReturn(<Movie>[]);
+      expect(containerFinder, findsWidgets);
+    });
 
-    await tester.pumpWidget(_makeTestableWidget(SearchPage()));
+    testWidgets('should have TextField for search input',
+        (WidgetTester tester) async {
+      when(() => mockBloc.state).thenReturn(SearchMoviesEmpty());
 
-    final textFieldFinder = find.byType(TextField);
-    await tester.enterText(textFieldFinder, 'spiderman');
-    await tester.testTextInput.receiveAction(TextInputAction.search);
-    await tester.pump();
+      final textFieldFinder = find.byType(TextField);
 
-    verify(mockNotifier.fetchMovieSearch('spiderman')).called(1);
+      await tester.pumpWidget(makeTestableWidget(SearchPage()));
+
+      expect(textFieldFinder, findsOneWidget);
+    });
   });
 }

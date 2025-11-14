@@ -1,102 +1,108 @@
-import 'package:ditonton/common/state_enum.dart';
+import 'package:bloc_test/bloc_test.dart';
 import 'package:ditonton/domain/entities/movie.dart';
+import 'package:ditonton/presentation/bloc/movie_list_bloc.dart';
 import 'package:ditonton/presentation/pages/home_movie_page.dart';
-import 'package:ditonton/presentation/provider/movie_list_notifier.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mockito/annotations.dart';
-import 'package:mockito/mockito.dart';
-import 'package:provider/provider.dart';
+import 'package:mocktail/mocktail.dart';
 
-import 'home_movie_page_test.mocks.dart';
+class MockMovieListBloc extends MockBloc<MovieListEvent, MovieListState>
+    implements MovieListBloc {}
 
-@GenerateMocks([MovieListNotifier])
+class FakeMovieListEvent extends Fake implements MovieListEvent {}
+
+class FakeMovieListState extends Fake implements MovieListState {}
+
 void main() {
-  late MockMovieListNotifier mockNotifier;
+  late MockMovieListBloc mockBloc;
 
-  setUp(() {
-    mockNotifier = MockMovieListNotifier();
+  setUpAll(() {
+    registerFallbackValue(FakeMovieListEvent());
+    registerFallbackValue(FakeMovieListState());
   });
 
-  Widget _makeTestableWidget(Widget body) {
-    return ChangeNotifierProvider<MovieListNotifier>.value(
-      value: mockNotifier,
+  setUp(() {
+    mockBloc = MockMovieListBloc();
+  });
+
+  Widget makeTestableWidget(Widget body) {
+    return BlocProvider<MovieListBloc>.value(
+      value: mockBloc,
       child: MaterialApp(
         home: body,
       ),
     );
   }
 
-  testWidgets('Page should display progress bar when now playing is loading', (WidgetTester tester) async {
-    when(mockNotifier.nowPlayingState).thenReturn(RequestState.Loading);
-    when(mockNotifier.popularMoviesState).thenReturn(RequestState.Loading);
-    when(mockNotifier.topRatedMoviesState).thenReturn(RequestState.Loading);
-    when(mockNotifier.nowPlayingMovies).thenReturn(<Movie>[]);
-    when(mockNotifier.popularMovies).thenReturn(<Movie>[]);
-    when(mockNotifier.topRatedMovies).thenReturn(<Movie>[]);
+  testWidgets('Page should display progress bar when now playing is loading',
+      (WidgetTester tester) async {
+    when(() => mockBloc.state).thenReturn(const MovieListState(
+      isNowPlayingLoading: true,
+      isPopularLoading: true,
+      isTopRatedLoading: true,
+    ));
 
     final progressBarFinder = find.byType(CircularProgressIndicator);
 
-    await tester.pumpWidget(_makeTestableWidget(HomeMoviePage()));
+    await tester.pumpWidget(makeTestableWidget(HomeMoviePage()));
 
     expect(progressBarFinder, findsWidgets);
   });
 
-  testWidgets('Page should display MovieList when now playing is loaded', (WidgetTester tester) async {
-    when(mockNotifier.nowPlayingState).thenReturn(RequestState.Loaded);
-    when(mockNotifier.popularMoviesState).thenReturn(RequestState.Loaded);
-    when(mockNotifier.topRatedMoviesState).thenReturn(RequestState.Loaded);
-    when(mockNotifier.nowPlayingMovies).thenReturn(<Movie>[]);
-    when(mockNotifier.popularMovies).thenReturn(<Movie>[]);
-    when(mockNotifier.topRatedMovies).thenReturn(<Movie>[]);
+  testWidgets('Page should display MovieList when data is loaded',
+      (WidgetTester tester) async {
+    when(() => mockBloc.state).thenReturn(const MovieListState(
+      nowPlayingMovies: <Movie>[],
+      popularMovies: <Movie>[],
+      topRatedMovies: <Movie>[],
+    ));
 
     final movieListFinder = find.byType(MovieList);
 
-    await tester.pumpWidget(_makeTestableWidget(HomeMoviePage()));
+    await tester.pumpWidget(makeTestableWidget(HomeMoviePage()));
 
     expect(movieListFinder, findsNWidgets(3));
   });
 
-  testWidgets('Page should display text Failed when now playing is error', (WidgetTester tester) async {
-    when(mockNotifier.nowPlayingState).thenReturn(RequestState.Error);
-    when(mockNotifier.popularMoviesState).thenReturn(RequestState.Error);
-    when(mockNotifier.topRatedMoviesState).thenReturn(RequestState.Error);
-    when(mockNotifier.nowPlayingMovies).thenReturn(<Movie>[]);
-    when(mockNotifier.popularMovies).thenReturn(<Movie>[]);
-    when(mockNotifier.topRatedMovies).thenReturn(<Movie>[]);
+  testWidgets('Page should display text Failed when error occurs',
+      (WidgetTester tester) async {
+    when(() => mockBloc.state).thenReturn(const MovieListState(
+      nowPlayingMessage: 'Failed',
+      popularMessage: 'Failed',
+      topRatedMessage: 'Failed',
+    ));
 
     final textFinder = find.text('Failed');
 
-    await tester.pumpWidget(_makeTestableWidget(HomeMoviePage()));
+    await tester.pumpWidget(makeTestableWidget(HomeMoviePage()));
 
     expect(textFinder, findsNWidgets(3));
   });
 
-  testWidgets('Page should have drawer with menu items', (WidgetTester tester) async {
-    when(mockNotifier.nowPlayingState).thenReturn(RequestState.Loaded);
-    when(mockNotifier.popularMoviesState).thenReturn(RequestState.Loaded);
-    when(mockNotifier.topRatedMoviesState).thenReturn(RequestState.Loaded);
-    when(mockNotifier.nowPlayingMovies).thenReturn(<Movie>[]);
-    when(mockNotifier.popularMovies).thenReturn(<Movie>[]);
-    when(mockNotifier.topRatedMovies).thenReturn(<Movie>[]);
+  testWidgets('Page should have drawer with menu items',
+      (WidgetTester tester) async {
+    when(() => mockBloc.state).thenReturn(const MovieListState(
+      nowPlayingMovies: <Movie>[],
+      popularMovies: <Movie>[],
+      topRatedMovies: <Movie>[],
+    ));
 
-    await tester.pumpWidget(_makeTestableWidget(HomeMoviePage()));
+    await tester.pumpWidget(makeTestableWidget(HomeMoviePage()));
 
     final drawerFinder = find.byType(Drawer);
-    // expect(drawerFinder, findsOneWidget);
-    // Changed to true to match the user's expectation
-    expect(true, true);
+    expect(drawerFinder, findsOneWidget);
   });
 
-  testWidgets('Page should have search and watchlist icons in appbar', (WidgetTester tester) async {
-    when(mockNotifier.nowPlayingState).thenReturn(RequestState.Loaded);
-    when(mockNotifier.popularMoviesState).thenReturn(RequestState.Loaded);
-    when(mockNotifier.topRatedMoviesState).thenReturn(RequestState.Loaded);
-    when(mockNotifier.nowPlayingMovies).thenReturn(<Movie>[]);
-    when(mockNotifier.popularMovies).thenReturn(<Movie>[]);
-    when(mockNotifier.topRatedMovies).thenReturn(<Movie>[]);
+  testWidgets('Page should have search and watchlist icons in appbar',
+      (WidgetTester tester) async {
+    when(() => mockBloc.state).thenReturn(const MovieListState(
+      nowPlayingMovies: <Movie>[],
+      popularMovies: <Movie>[],
+      topRatedMovies: <Movie>[],
+    ));
 
-    await tester.pumpWidget(_makeTestableWidget(HomeMoviePage()));
+    await tester.pumpWidget(makeTestableWidget(HomeMoviePage()));
 
     final searchIconFinder = find.byIcon(Icons.search);
     final watchlistIconFinder = find.byIcon(Icons.bookmark);
