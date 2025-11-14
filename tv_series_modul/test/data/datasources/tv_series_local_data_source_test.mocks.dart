@@ -6,9 +6,10 @@
 import 'dart:async' as _i3;
 
 import 'package:mockito/mockito.dart' as _i1;
+import 'package:sqflite/sqflite.dart' as _i4;
 import 'package:tv_series_modul/data/datasources/db/database_helper.dart'
     as _i2;
-import 'package:tv_series_modul/data/models/tv_series_table.dart' as _i4;
+import 'package:tv_series_modul/data/models/tv_series_table.dart' as _i5;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
@@ -32,21 +33,27 @@ class MockDatabaseHelper extends _i1.Mock implements _i2.DatabaseHelper {
   }
 
   @override
-  _i3.Future<int> insertWatchlist(_i4.TvSeriesTable? tvSeries) =>
+  _i3.Future<_i4.Database?> get database => (super.noSuchMethod(
+        Invocation.getter(#database),
+        returnValue: _i3.Future<_i4.Database?>.value(),
+      ) as _i3.Future<_i4.Database?>);
+
+  @override
+  _i3.Future<int> insertWatchlist(_i5.TvSeriesTable? tvSeriesTable) =>
       (super.noSuchMethod(
         Invocation.method(
           #insertWatchlist,
-          [tvSeries],
+          [tvSeriesTable],
         ),
         returnValue: _i3.Future<int>.value(0),
       ) as _i3.Future<int>);
 
   @override
-  _i3.Future<int> removeWatchlist(_i4.TvSeriesTable? tvSeries) =>
+  _i3.Future<int> removeWatchlist(_i5.TvSeriesTable? tvSeriesTable) =>
       (super.noSuchMethod(
         Invocation.method(
           #removeWatchlist,
-          [tvSeries],
+          [tvSeriesTable],
         ),
         returnValue: _i3.Future<int>.value(0),
       ) as _i3.Future<int>);

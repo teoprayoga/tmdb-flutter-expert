@@ -2,6 +2,8 @@
 
 Aplikasi Flutter untuk menampilkan daftar TV Series dengan fitur lengkap termasuk detail, pencarian, dan watchlist. Dibuat mengikuti Clean Architecture dan menggunakan BLoC untuk state management.
 
+## Flutter versi: 3.24.4
+
 ## Fitur Utama
 
 ### Kriteria Wajib ✅

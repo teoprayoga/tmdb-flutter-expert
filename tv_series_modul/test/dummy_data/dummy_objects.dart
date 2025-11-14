@@ -64,7 +64,7 @@ final testTvSeriesDetailModel = TvSeriesDetailModel(
   originCountry: ['US'],
 );
 
-final testTvSeriesDetail = TvSeriesDetail(
+const testTvSeriesDetail = TvSeriesDetail(
   id: 1,
   name: 'Test TV Series',
   overview: 'Test Overview',
