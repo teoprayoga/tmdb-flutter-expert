@@ -8,16 +8,15 @@ import 'package:ditonton/presentation/pages/popular_movies_page.dart';
 import 'package:ditonton/presentation/pages/search_page.dart';
 import 'package:ditonton/presentation/pages/top_rated_movies_page.dart';
 import 'package:ditonton/presentation/pages/watchlist_movies_page.dart';
-import 'package:ditonton/presentation/provider/movie_detail_notifier.dart';
-import 'package:ditonton/presentation/provider/movie_list_notifier.dart';
-import 'package:ditonton/presentation/provider/movie_search_notifier.dart';
-import 'package:ditonton/presentation/provider/popular_movies_notifier.dart';
-import 'package:ditonton/presentation/provider/top_rated_movies_notifier.dart';
-import 'package:ditonton/presentation/provider/watchlist_movie_notifier.dart';
+import 'package:ditonton/presentation/bloc/movie_detail_bloc.dart';
+import 'package:ditonton/presentation/bloc/movie_list_bloc.dart';
+import 'package:ditonton/presentation/bloc/search_movies_bloc.dart';
+import 'package:ditonton/presentation/bloc/popular_movies_bloc.dart';
+import 'package:ditonton/presentation/bloc/top_rated_movies_bloc.dart';
+import 'package:ditonton/presentation/bloc/watchlist_movies_bloc.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:provider/provider.dart';
 import 'package:tv_series_modul/presentation/bloc/search_tv_series_bloc.dart';
 import 'package:tv_series_modul/presentation/bloc/tv_series_detail_bloc.dart';
 import 'package:tv_series_modul/presentation/bloc/tv_series_list_bloc.dart';
@@ -39,6 +38,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
+        // TV Series BLoCs
         BlocProvider(
           create: (_) => di.locator<TvSeriesListBloc>(),
         ),
@@ -51,95 +51,92 @@ class MyApp extends StatelessWidget {
         BlocProvider(
           create: (_) => di.locator<WatchlistTvSeriesBloc>(),
         ),
-      ],
-      child: MultiProvider(
-        providers: [
-          ChangeNotifierProvider(
-            create: (_) => di.locator<MovieListNotifier>(),
-          ),
-          ChangeNotifierProvider(
-            create: (_) => di.locator<MovieDetailNotifier>(),
-          ),
-          ChangeNotifierProvider(
-            create: (_) => di.locator<MovieSearchNotifier>(),
-          ),
-          ChangeNotifierProvider(
-            create: (_) => di.locator<TopRatedMoviesNotifier>(),
-          ),
-          ChangeNotifierProvider(
-            create: (_) => di.locator<PopularMoviesNotifier>(),
-          ),
-          ChangeNotifierProvider(
-            create: (_) => di.locator<WatchlistMovieNotifier>(),
-          ),
-        ],
-        child: MaterialApp(
-          title: 'Flutter Demo',
-          theme: ThemeData.dark().copyWith(
-            colorScheme: kColorScheme,
-            primaryColor: kRichBlack,
-            scaffoldBackgroundColor: kRichBlack,
-            textTheme: kTextTheme,
-            drawerTheme: kDrawerTheme,
-          ),
-          home: HomeMoviePage(),
-          navigatorObservers: [routeObserver],
-          onGenerateRoute: (RouteSettings settings) {
-            switch (settings.name) {
-              case '/home':
-                return MaterialPageRoute(builder: (_) => HomeMoviePage());
-              case PopularMoviesPage.ROUTE_NAME:
-                return CupertinoPageRoute(builder: (_) => PopularMoviesPage());
-              case TopRatedMoviesPage.ROUTE_NAME:
-                return CupertinoPageRoute(builder: (_) => TopRatedMoviesPage());
-              case MovieDetailPage.ROUTE_NAME:
-                final id = settings.arguments as int;
-                return MaterialPageRoute(
-                  builder: (_) => MovieDetailPage(id: id),
-                  settings: settings,
-                );
-              case SearchPage.ROUTE_NAME:
-                return CupertinoPageRoute(builder: (_) => SearchPage());
-              case WatchlistMoviesPage.ROUTE_NAME:
-                return MaterialPageRoute(builder: (_) => WatchlistMoviesPage());
-              case AboutPage.ROUTE_NAME:
-                return MaterialPageRoute(builder: (_) => AboutPage());
-              case PopularTvSeriesPage.routeName:
-                return MaterialPageRoute(
-                  builder: (_) => const PopularTvSeriesPage(),
-                );
-              case TopRatedTvSeriesPage.routeName:
-                return MaterialPageRoute(
-                  builder: (_) => const TopRatedTvSeriesPage(),
-                );
-              case OnTheAirTvSeriesPage.routeName:
-                return MaterialPageRoute(
-                  builder: (_) => const OnTheAirTvSeriesPage(),
-                );
-              case TvSeriesDetailPage.routeName:
-                final id = settings.arguments as int;
-                return MaterialPageRoute(
-                  builder: (_) => TvSeriesDetailPage(id: id),
-                );
-              case SearchTvSeriesPage.routeName:
-                return MaterialPageRoute(
-                  builder: (_) => const SearchTvSeriesPage(),
-                );
-              case WatchlistTvSeriesPage.routeName:
-                return MaterialPageRoute(
-                  builder: (_) => const WatchlistTvSeriesPage(),
-                );
-              default:
-                return MaterialPageRoute(builder: (_) {
-                  return Scaffold(
-                    body: Center(
-                      child: Text('Page not found :('),
-                    ),
-                  );
-                });
-            }
-          },
+        // Movie BLoCs
+        BlocProvider(
+          create: (_) => di.locator<MovieListBloc>(),
         ),
+        BlocProvider(
+          create: (_) => di.locator<MovieDetailBloc>(),
+        ),
+        BlocProvider(
+          create: (_) => di.locator<SearchMoviesBloc>(),
+        ),
+        BlocProvider(
+          create: (_) => di.locator<TopRatedMoviesBloc>(),
+        ),
+        BlocProvider(
+          create: (_) => di.locator<PopularMoviesBloc>(),
+        ),
+        BlocProvider(
+          create: (_) => di.locator<WatchlistMoviesBloc>(),
+        ),
+      ],
+      child: MaterialApp(
+        title: 'Flutter Demo',
+        theme: ThemeData.dark().copyWith(
+          colorScheme: kColorScheme,
+          primaryColor: kRichBlack,
+          scaffoldBackgroundColor: kRichBlack,
+          textTheme: kTextTheme,
+          drawerTheme: kDrawerTheme,
+        ),
+        home: HomeMoviePage(),
+        navigatorObservers: [routeObserver],
+        onGenerateRoute: (RouteSettings settings) {
+          switch (settings.name) {
+            case '/home':
+              return MaterialPageRoute(builder: (_) => HomeMoviePage());
+            case PopularMoviesPage.ROUTE_NAME:
+              return CupertinoPageRoute(builder: (_) => PopularMoviesPage());
+            case TopRatedMoviesPage.ROUTE_NAME:
+              return CupertinoPageRoute(builder: (_) => TopRatedMoviesPage());
+            case MovieDetailPage.ROUTE_NAME:
+              final id = settings.arguments as int;
+              return MaterialPageRoute(
+                builder: (_) => MovieDetailPage(id: id),
+                settings: settings,
+              );
+            case SearchPage.ROUTE_NAME:
+              return CupertinoPageRoute(builder: (_) => SearchPage());
+            case WatchlistMoviesPage.ROUTE_NAME:
+              return MaterialPageRoute(builder: (_) => WatchlistMoviesPage());
+            case AboutPage.ROUTE_NAME:
+              return MaterialPageRoute(builder: (_) => AboutPage());
+            case PopularTvSeriesPage.routeName:
+              return MaterialPageRoute(
+                builder: (_) => const PopularTvSeriesPage(),
+              );
+            case TopRatedTvSeriesPage.routeName:
+              return MaterialPageRoute(
+                builder: (_) => const TopRatedTvSeriesPage(),
+              );
+            case OnTheAirTvSeriesPage.routeName:
+              return MaterialPageRoute(
+                builder: (_) => const OnTheAirTvSeriesPage(),
+              );
+            case TvSeriesDetailPage.routeName:
+              final id = settings.arguments as int;
+              return MaterialPageRoute(
+                builder: (_) => TvSeriesDetailPage(id: id),
+              );
+            case SearchTvSeriesPage.routeName:
+              return MaterialPageRoute(
+                builder: (_) => const SearchTvSeriesPage(),
+              );
+            case WatchlistTvSeriesPage.routeName:
+              return MaterialPageRoute(
+                builder: (_) => const WatchlistTvSeriesPage(),
+              );
+            default:
+              return MaterialPageRoute(builder: (_) {
+                return Scaffold(
+                  body: Center(
+                    child: Text('Page not found :('),
+                  ),
+                );
+              });
+          }
+        },
       ),
     );
   }
