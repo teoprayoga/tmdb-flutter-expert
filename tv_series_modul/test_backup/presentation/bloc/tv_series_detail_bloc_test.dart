@@ -54,10 +54,8 @@ void main() {
     blocTest<TvSeriesDetailBloc, TvSeriesDetailState>(
       'should emit [Loading, HasData] when detail and recommendations are gotten successfully',
       build: () {
-        when(mockGetTvSeriesDetail.execute(tId))
-            .thenAnswer((_) async => const Right(testTvSeriesDetail));
-        when(mockGetTvSeriesRecommendations.execute(tId))
-            .thenAnswer((_) async => Right(testTvSeriesList));
+        when(mockGetTvSeriesDetail.execute(tId)).thenAnswer((_) async => const Right(testTvSeriesDetail));
+        when(mockGetTvSeriesRecommendations.execute(tId)).thenAnswer((_) async => Right(testTvSeriesList));
         return tvSeriesDetailBloc;
       },
       act: (bloc) => bloc.add(const FetchTvSeriesDetail(tId)),
@@ -87,10 +85,8 @@ void main() {
     blocTest<TvSeriesDetailBloc, TvSeriesDetailState>(
       'should emit [Loading, Error] when get detail is unsuccessful',
       build: () {
-        when(mockGetTvSeriesDetail.execute(tId))
-            .thenAnswer((_) async => const Left(ServerFailure('Server Failure')));
-        when(mockGetTvSeriesRecommendations.execute(tId))
-            .thenAnswer((_) async => Right(testTvSeriesList));
+        when(mockGetTvSeriesDetail.execute(tId)).thenAnswer((_) async => const Left(ServerFailure('Server Failure')));
+        when(mockGetTvSeriesRecommendations.execute(tId)).thenAnswer((_) async => Right(testTvSeriesList));
         return tvSeriesDetailBloc;
       },
       act: (bloc) => bloc.add(const FetchTvSeriesDetail(tId)),
@@ -113,8 +109,7 @@ void main() {
     blocTest<TvSeriesDetailBloc, TvSeriesDetailState>(
       'should emit [Loading, HasData with recommendations error] when detail is successful but recommendations fail',
       build: () {
-        when(mockGetTvSeriesDetail.execute(tId))
-            .thenAnswer((_) async => const Right(testTvSeriesDetail));
+        when(mockGetTvSeriesDetail.execute(tId)).thenAnswer((_) async => const Right(testTvSeriesDetail));
         when(mockGetTvSeriesRecommendations.execute(tId))
             .thenAnswer((_) async => const Left(ServerFailure('Server Failure')));
         return tvSeriesDetailBloc;
@@ -148,10 +143,8 @@ void main() {
     blocTest<TvSeriesDetailBloc, TvSeriesDetailState>(
       'should emit success message and trigger LoadWatchlistStatus when add is successful',
       build: () {
-        when(mockSaveWatchlist.execute(testTvSeriesDetail))
-            .thenAnswer((_) async => const Right('Added to Watchlist'));
-        when(mockGetWatchlistStatus.execute(testTvSeriesDetail.id))
-            .thenAnswer((_) async => true);
+        when(mockSaveWatchlist.execute(testTvSeriesDetail)).thenAnswer((_) async => const Right('Added to Watchlist'));
+        when(mockGetWatchlistStatus.execute(testTvSeriesDetail.id)).thenAnswer((_) async => true);
         return tvSeriesDetailBloc;
       },
       act: (bloc) => bloc.add(const AddToWatchlist(testTvSeriesDetail)),
@@ -176,8 +169,7 @@ void main() {
       build: () {
         when(mockSaveWatchlist.execute(testTvSeriesDetail))
             .thenAnswer((_) async => const Left(DatabaseFailure('Database Failure')));
-        when(mockGetWatchlistStatus.execute(testTvSeriesDetail.id))
-            .thenAnswer((_) async => false);
+        when(mockGetWatchlistStatus.execute(testTvSeriesDetail.id)).thenAnswer((_) async => false);
         return tvSeriesDetailBloc;
       },
       act: (bloc) => bloc.add(const AddToWatchlist(testTvSeriesDetail)),
@@ -203,8 +195,7 @@ void main() {
       build: () {
         when(mockRemoveWatchlist.execute(testTvSeriesDetail))
             .thenAnswer((_) async => const Right('Removed from Watchlist'));
-        when(mockGetWatchlistStatus.execute(testTvSeriesDetail.id))
-            .thenAnswer((_) async => false);
+        when(mockGetWatchlistStatus.execute(testTvSeriesDetail.id)).thenAnswer((_) async => false);
         return tvSeriesDetailBloc;
       },
       act: (bloc) => bloc.add(const RemoveFromWatchlist(testTvSeriesDetail)),
@@ -229,8 +220,7 @@ void main() {
       build: () {
         when(mockRemoveWatchlist.execute(testTvSeriesDetail))
             .thenAnswer((_) async => const Left(DatabaseFailure('Database Failure')));
-        when(mockGetWatchlistStatus.execute(testTvSeriesDetail.id))
-            .thenAnswer((_) async => true);
+        when(mockGetWatchlistStatus.execute(testTvSeriesDetail.id)).thenAnswer((_) async => true);
         return tvSeriesDetailBloc;
       },
       act: (bloc) => bloc.add(const RemoveFromWatchlist(testTvSeriesDetail)),
@@ -254,8 +244,7 @@ void main() {
     blocTest<TvSeriesDetailBloc, TvSeriesDetailState>(
       'should emit true when tv series is in watchlist',
       build: () {
-        when(mockGetWatchlistStatus.execute(tId))
-            .thenAnswer((_) async => true);
+        when(mockGetWatchlistStatus.execute(tId)).thenAnswer((_) async => true);
         return tvSeriesDetailBloc;
       },
       act: (bloc) => bloc.add(const LoadWatchlistStatus(tId)),
@@ -270,8 +259,7 @@ void main() {
     blocTest<TvSeriesDetailBloc, TvSeriesDetailState>(
       'should emit false when tv series is not in watchlist',
       build: () {
-        when(mockGetWatchlistStatus.execute(tId))
-            .thenAnswer((_) async => false);
+        when(mockGetWatchlistStatus.execute(tId)).thenAnswer((_) async => false);
         return tvSeriesDetailBloc;
       },
       act: (bloc) => bloc.add(const LoadWatchlistStatus(tId)),

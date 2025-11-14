@@ -1,10 +1,12 @@
+import 'package:equatable/equatable.dart';
+
 import '../../domain/entities/tv_series_detail.dart';
 
-class GenreModel {
+class GenreModel extends Equatable {
   final int id;
   final String name;
 
-  GenreModel({
+  const GenreModel({
     required this.id,
     required this.name,
   });
@@ -29,9 +31,12 @@ class GenreModel {
       name: name,
     );
   }
+
+  @override
+  List<Object?> get props => [id, name];
 }
 
-class SeasonModel {
+class SeasonModel extends Equatable {
   final int id;
   final String name;
   final int seasonNumber;
@@ -40,7 +45,7 @@ class SeasonModel {
   final String? airDate;
   final String overview;
 
-  SeasonModel({
+  const SeasonModel({
     required this.id,
     required this.name,
     required this.seasonNumber,
@@ -85,9 +90,12 @@ class SeasonModel {
       overview: overview,
     );
   }
+
+  @override
+  List<Object?> get props => [id, name, seasonNumber, episodeCount, posterPath, airDate, overview];
 }
 
-class TvSeriesDetailModel {
+class TvSeriesDetailModel extends Equatable {
   final int id;
   final String name;
   final String overview;
@@ -106,7 +114,7 @@ class TvSeriesDetailModel {
   final bool inProduction;
   final List<String> originCountry;
 
-  TvSeriesDetailModel({
+  const TvSeriesDetailModel({
     required this.id,
     required this.name,
     required this.overview,
@@ -137,16 +145,10 @@ class TvSeriesDetailModel {
       voteCount: json['vote_count'] as int? ?? 0,
       firstAirDate: json['first_air_date'] as String?,
       lastAirDate: json['last_air_date'] as String?,
-      genres: (json['genres'] as List?)
-              ?.map((e) => GenreModel.fromJson(e as Map<String, dynamic>))
-              .toList() ??
-          [],
+      genres: (json['genres'] as List?)?.map((e) => GenreModel.fromJson(e as Map<String, dynamic>)).toList() ?? [],
       numberOfSeasons: json['number_of_seasons'] as int? ?? 0,
       numberOfEpisodes: json['number_of_episodes'] as int? ?? 0,
-      seasons: (json['seasons'] as List?)
-              ?.map((e) => SeasonModel.fromJson(e as Map<String, dynamic>))
-              .toList() ??
-          [],
+      seasons: (json['seasons'] as List?)?.map((e) => SeasonModel.fromJson(e as Map<String, dynamic>)).toList() ?? [],
       status: json['status'] as String? ?? '',
       type: json['type'] as String? ?? '',
       inProduction: json['in_production'] as bool? ?? false,
@@ -197,4 +199,25 @@ class TvSeriesDetailModel {
       originCountry: originCountry,
     );
   }
+
+  @override
+  List<Object?> get props => [
+        id,
+        name,
+        overview,
+        posterPath,
+        backdropPath,
+        voteAverage,
+        voteCount,
+        firstAirDate,
+        lastAirDate,
+        genres,
+        numberOfSeasons,
+        numberOfEpisodes,
+        seasons,
+        status,
+        type,
+        inProduction,
+        originCountry,
+      ];
 }

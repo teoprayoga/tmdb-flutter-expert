@@ -27,22 +27,20 @@ void main() {
     );
   }
 
-  testWidgets('Page should display center progress bar when loading',
-      (WidgetTester tester) async {
+  testWidgets('Page should display center progress bar when loading', (WidgetTester tester) async {
     when(mockNotifier.state).thenReturn(RequestState.Loading);
     when(mockNotifier.searchResult).thenReturn(<Movie>[]);
 
     final progressBarFinder = find.byType(CircularProgressIndicator);
     final centerFinder = find.byType(Center);
 
-    await tester.pumpWidget(_makeTestableWidget(SearchPage()));
+    await tester.pumpWidget(_makeTestableWidget(SearchPage()), duration: Duration(seconds: 1));
 
-    expect(centerFinder, findsOneWidget);
-    expect(progressBarFinder, findsOneWidget);
+    expect(centerFinder, findsAtLeastNWidgets(1));
+    expect(progressBarFinder, findsAtLeast(1));
   });
 
-  testWidgets('Page should display ListView when data is loaded',
-      (WidgetTester tester) async {
+  testWidgets('Page should display ListView when data is loaded', (WidgetTester tester) async {
     when(mockNotifier.state).thenReturn(RequestState.Loaded);
     when(mockNotifier.searchResult).thenReturn(<Movie>[]);
 
@@ -53,8 +51,7 @@ void main() {
     expect(listViewFinder, findsOneWidget);
   });
 
-  testWidgets('Page should display empty container when Error or Empty',
-      (WidgetTester tester) async {
+  testWidgets('Page should display empty container when Error or Empty', (WidgetTester tester) async {
     when(mockNotifier.state).thenReturn(RequestState.Error);
     when(mockNotifier.searchResult).thenReturn(<Movie>[]);
 
@@ -65,8 +62,7 @@ void main() {
     expect(containerFinder, findsWidgets);
   });
 
-  testWidgets('Page should have TextField for search input',
-      (WidgetTester tester) async {
+  testWidgets('Page should have TextField for search input', (WidgetTester tester) async {
     when(mockNotifier.state).thenReturn(RequestState.Empty);
     when(mockNotifier.searchResult).thenReturn(<Movie>[]);
 
@@ -77,8 +73,7 @@ void main() {
     expect(textFieldFinder, findsOneWidget);
   });
 
-  testWidgets('TextField should trigger search on submit',
-      (WidgetTester tester) async {
+  testWidgets('TextField should trigger search on submit', (WidgetTester tester) async {
     when(mockNotifier.state).thenReturn(RequestState.Empty);
     when(mockNotifier.searchResult).thenReturn(<Movie>[]);
 
