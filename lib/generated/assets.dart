@@ -3,6 +3,7 @@ class Assets {
   Assets._();
 
   static const String assetsCircleG = 'assets/circle-g.png';
+  static const String certificatesThemoviedb = 'assets/certificates/themoviedb.pem';
   static const String fontsPoppinsLight = 'assets/fonts/Poppins-Light.ttf';
   static const String fontsPoppinsMedium = 'assets/fonts/Poppins-Medium.ttf';
   static const String fontsPoppinsRegular = 'assets/fonts/Poppins-Regular.ttf';
