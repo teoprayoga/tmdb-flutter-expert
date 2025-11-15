@@ -64,8 +64,7 @@ void main() {
   });
 
   group('Analytics Events', () {
-    test('logMovieView should call analytics.logEvent with correct parameters',
-        () async {
+    test('logMovieView should call analytics.logEvent with correct parameters', () async {
       // Arrange
       const movieId = 123;
       const movieTitle = 'Test Movie';
@@ -87,8 +86,7 @@ void main() {
           )).called(1);
     });
 
-    test('logTvSeriesView should call analytics.logEvent with correct parameters',
-        () async {
+    test('logTvSeriesView should call analytics.logEvent with correct parameters', () async {
       // Arrange
       const tvSeriesId = 456;
       const tvSeriesTitle = 'Test TV Series';
@@ -110,8 +108,7 @@ void main() {
           )).called(1);
     });
 
-    test('logSearch should call analytics.logSearch with correct parameters',
-        () async {
+    test('logSearch should call analytics.logSearch with correct parameters', () async {
       // Arrange
       const searchTerm = 'action movies';
       const searchType = 'movie';
@@ -132,9 +129,7 @@ void main() {
           )).called(1);
     });
 
-    test(
-        'logAddToWatchlist should call analytics.logEvent with correct parameters',
-        () async {
+    test('logAddToWatchlist should call analytics.logEvent with correct parameters', () async {
       // Arrange
       const itemId = 789;
       const itemType = 'movie';
@@ -158,9 +153,7 @@ void main() {
           )).called(1);
     });
 
-    test(
-        'logRemoveFromWatchlist should call analytics.logEvent with correct parameters',
-        () async {
+    test('logRemoveFromWatchlist should call analytics.logEvent with correct parameters', () async {
       // Arrange
       const itemId = 789;
       const itemType = 'movie';
@@ -171,8 +164,7 @@ void main() {
           )).thenAnswer((_) async => Future.value());
 
       // Act
-      await analyticsService.logRemoveFromWatchlist(
-          itemId, itemType, itemTitle);
+      await analyticsService.logRemoveFromWatchlist(itemId, itemType, itemTitle);
 
       // Assert
       verify(() => mockAnalytics.logEvent(
@@ -185,9 +177,7 @@ void main() {
           )).called(1);
     });
 
-    test(
-        'logScreenView should call analytics.logScreenView with correct parameters',
-        () async {
+    test('logScreenView should call analytics.logScreenView with correct parameters', () async {
       // Arrange
       const screenName = 'movie_detail_screen';
       when(() => mockAnalytics.logScreenView(
@@ -203,9 +193,7 @@ void main() {
           )).called(1);
     });
 
-    test(
-        'logButtonClick should call analytics.logEvent with correct parameters',
-        () async {
+    test('logButtonClick should call analytics.logEvent with correct parameters', () async {
       // Arrange
       const buttonName = 'add_to_watchlist_button';
       const screenName = 'movie_detail_screen';
@@ -232,8 +220,7 @@ void main() {
     test('setUserIdentifier should call crashlytics.setUserIdentifier', () {
       // Arrange
       const userId = 'user123';
-      when(() => mockCrashlytics.setUserIdentifier(any()))
-          .thenAnswer((_) async => Future.value());
+      when(() => mockCrashlytics.setUserIdentifier(any())).thenAnswer((_) async => Future.value());
 
       // Act
       analyticsService.setUserIdentifier(userId);
@@ -242,13 +229,11 @@ void main() {
       verify(() => mockCrashlytics.setUserIdentifier(userId)).called(1);
     });
 
-    test('setCustomKey should call crashlytics.setCustomKey with correct parameters',
-        () {
+    test('setCustomKey should call crashlytics.setCustomKey with correct parameters', () {
       // Arrange
       const key = 'test_key';
       const value = 'test_value';
-      when(() => mockCrashlytics.setCustomKey(any(), any()))
-          .thenAnswer((_) {});
+      when(() => mockCrashlytics.setCustomKey(any(), any())).thenAnswer((_) async => Future.value());
 
       // Act
       analyticsService.setCustomKey(key, value);
@@ -260,8 +245,7 @@ void main() {
     test('setCustomKey should handle different value types', () {
       // Arrange
       const key = 'test_key';
-      when(() => mockCrashlytics.setCustomKey(any(), any()))
-          .thenAnswer((_) {});
+      when(() => mockCrashlytics.setCustomKey(any(), any())).thenAnswer((_) async => Future.value());
 
       // Act & Assert - String
       analyticsService.setCustomKey(key, 'string_value');
@@ -276,8 +260,7 @@ void main() {
       verify(() => mockCrashlytics.setCustomKey(key, true)).called(1);
     });
 
-    test('recordError should call crashlytics.recordError with correct parameters',
-        () async {
+    test('recordError should call crashlytics.recordError with correct parameters', () async {
       // Arrange
       final exception = Exception('Test exception');
       final stack = StackTrace.current;
@@ -333,8 +316,7 @@ void main() {
     test('log should call crashlytics.log with correct message', () async {
       // Arrange
       const message = 'Test log message';
-      when(() => mockCrashlytics.log(any()))
-          .thenAnswer((_) async => Future.value());
+      when(() => mockCrashlytics.log(any())).thenAnswer((_) async => Future.value());
 
       // Act
       await analyticsService.log(message);
@@ -345,8 +327,7 @@ void main() {
 
     test('testCrash should call crashlytics.crash', () async {
       // Arrange
-      when(() => mockCrashlytics.crash())
-          .thenAnswer((_) async => Future.value());
+      when(() => mockCrashlytics.crash()).thenAnswer((_) async => Future.value());
 
       // Act
       await analyticsService.testCrash();
@@ -424,10 +405,8 @@ void main() {
             name: any(named: 'name'),
             parameters: any(named: 'parameters'),
           )).thenAnswer((_) async => Future.value());
-      when(() => mockCrashlytics.log(any()))
-          .thenAnswer((_) async => Future.value());
-      when(() => mockCrashlytics.setCustomKey(any(), any()))
-          .thenAnswer((_) {});
+      when(() => mockCrashlytics.log(any())).thenAnswer((_) async => Future.value());
+      when(() => mockCrashlytics.setCustomKey(any(), any())).thenAnswer((_) async => Future.value());
 
       // Act
       await analyticsService.logMovieView(1, 'Movie 1');
@@ -439,8 +418,7 @@ void main() {
             name: 'view_movie_detail',
             parameters: any(named: 'parameters'),
           )).called(1);
-      verify(() => mockCrashlytics.setCustomKey('last_movie_viewed', 1))
-          .called(1);
+      verify(() => mockCrashlytics.setCustomKey('last_movie_viewed', 1)).called(1);
       verify(() => mockCrashlytics.log('User viewed movie 1')).called(1);
     });
   });
