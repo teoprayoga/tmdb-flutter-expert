@@ -6,7 +6,7 @@ Aplikasi Flutter untuk menampilkan daftar TV Series dengan fitur lengkap termasu
 
 > **Catatan**: Ganti `<APP-ID>` pada badge di atas dengan App ID dari Codemagic Anda setelah menghubungkan repository.
 
-## Flutter versi: 3.24.4
+## Flutter versi: 3.35.6
 
 ## Fitur Utama
 

@@ -10,7 +10,7 @@ workflows:
       groups:
         - firebase
       vars:
-        FLUTTER_VERSION: "3.24.4"
+        FLUTTER_VERSION: "3.35.6"
 
     triggering:
       events:
