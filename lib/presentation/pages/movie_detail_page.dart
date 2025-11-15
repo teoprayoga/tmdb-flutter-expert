@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:ditonton/common/analytics_service.dart';
 import 'package:ditonton/common/constants.dart';
 import 'package:ditonton/domain/entities/genre.dart';
 import 'package:ditonton/domain/entities/movie.dart';
@@ -19,6 +20,8 @@ class MovieDetailPage extends StatefulWidget {
 }
 
 class _MovieDetailPageState extends State<MovieDetailPage> {
+  final _analytics = AnalyticsService();
+
   @override
   void initState() {
     super.initState();
@@ -26,6 +29,10 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
       context.read<MovieDetailBloc>().add(FetchMovieDetail(widget.id));
       context.read<MovieDetailBloc>().add(LoadMovieWatchlistStatus(widget.id));
     });
+  }
+
+  void _logMovieView(MovieDetail movie) {
+    _analytics.logMovieView(movie.id, movie.title);
   }
 
   @override
@@ -39,6 +46,8 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
             );
           } else if (state.movieDetail != null) {
             final movie = state.movieDetail!;
+            // Log analytics event when movie detail is loaded
+            _logMovieView(movie);
             return SafeArea(
               child: DetailContent(
                 movie,
@@ -108,8 +117,13 @@ class DetailContent extends StatelessWidget {
                               listener: (context, state) {
                                 final message = state.watchlistMessage;
                                 if (message.isNotEmpty) {
-                                  if (message == MovieDetailBloc.watchlistAddSuccessMessage ||
-                                      message == MovieDetailBloc.watchlistRemoveSuccessMessage) {
+                                  if (message == MovieDetailBloc.watchlistAddSuccessMessage) {
+                                    // Log analytics event for adding to watchlist
+                                    AnalyticsService().logAddToWatchlist(movie.id, 'movie', movie.title);
+                                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
+                                  } else if (message == MovieDetailBloc.watchlistRemoveSuccessMessage) {
+                                    // Log analytics event for removing from watchlist
+                                    AnalyticsService().logRemoveFromWatchlist(movie.id, 'movie', movie.title);
                                     ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
                                   } else {
                                     showDialog(

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:ditonton/common/constants.dart';
 import 'package:ditonton/common/utils.dart';
 import 'package:ditonton/injection.dart' as di;
@@ -15,8 +17,12 @@ import 'package:ditonton/presentation/bloc/popular_movies_bloc.dart';
 import 'package:ditonton/presentation/bloc/top_rated_movies_bloc.dart';
 import 'package:ditonton/presentation/bloc/watchlist_movies_bloc.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:tv_series_modul/presentation/bloc/search_tv_series_bloc.dart';
 import 'package:tv_series_modul/presentation/bloc/tv_series_detail_bloc.dart';
 import 'package:tv_series_modul/presentation/bloc/tv_series_list_bloc.dart';
@@ -28,12 +34,32 @@ import 'package:tv_series_modul/presentation/pages/tv_series/top_rated_tv_series
 import 'package:tv_series_modul/presentation/pages/tv_series/tv_series_detail_page.dart';
 import 'package:tv_series_modul/presentation/pages/tv_series/watchlist_tv_series_page.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // Initialize Firebase
+  await Firebase.initializeApp();
+
+  // Pass all uncaught "fatal" errors from the framework to Crashlytics
+  FlutterError.onError = (errorDetails) {
+    FirebaseCrashlytics.instance.recordFlutterFatalError(errorDetails);
+  };
+
+  // Pass all uncaught asynchronous errors that aren't handled by the Flutter framework to Crashlytics
+  PlatformDispatcher.instance.onError = (error, stack) {
+    FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
+    return true;
+  };
+
   di.init();
   runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
+  static FirebaseAnalytics analytics = FirebaseAnalytics.instance;
+  static FirebaseAnalyticsObserver observer =
+      FirebaseAnalyticsObserver(analytics: analytics);
+
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
@@ -81,7 +107,7 @@ class MyApp extends StatelessWidget {
           drawerTheme: kDrawerTheme,
         ),
         home: HomeMoviePage(),
-        navigatorObservers: [routeObserver],
+        navigatorObservers: [routeObserver, observer],
         onGenerateRoute: (RouteSettings settings) {
           switch (settings.name) {
             case '/home':
