@@ -1,13 +1,17 @@
 import 'package:bloc_test/bloc_test.dart';
+import 'package:ditonton/common/analytics_service.dart';
 import 'package:ditonton/domain/entities/movie.dart';
 import 'package:ditonton/presentation/bloc/movie_detail_bloc.dart';
 import 'package:ditonton/presentation/pages/movie_detail_page.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
 import '../../dummy_data/dummy_objects.dart';
+import '../../helpers/firebase_mock_helper.dart';
 
 class MockMovieDetailBloc
     extends MockBloc<MovieDetailEvent, MovieDetailState>
@@ -17,16 +21,52 @@ class FakeMovieDetailEvent extends Fake implements MovieDetailEvent {}
 
 class FakeMovieDetailState extends Fake implements MovieDetailState {}
 
+class MockFirebaseAnalytics extends Mock implements FirebaseAnalytics {}
+
+class MockFirebaseCrashlytics extends Mock implements FirebaseCrashlytics {}
+
 void main() {
   late MockMovieDetailBloc mockBloc;
+  late MockFirebaseAnalytics mockAnalytics;
+  late MockFirebaseCrashlytics mockCrashlytics;
 
   setUpAll(() {
     registerFallbackValue(FakeMovieDetailEvent());
     registerFallbackValue(FakeMovieDetailState());
+
+    // Setup Firebase mocks
+    setupFirebaseMocks();
   });
 
   setUp(() {
     mockBloc = MockMovieDetailBloc();
+    mockAnalytics = MockFirebaseAnalytics();
+    mockCrashlytics = MockFirebaseCrashlytics();
+
+    // Reset and configure AnalyticsService with mocks
+    AnalyticsService.resetInstance();
+    AnalyticsService(
+      analytics: mockAnalytics,
+      crashlytics: mockCrashlytics,
+    );
+
+    // Stub analytics methods
+    when(() => mockAnalytics.logEvent(
+          name: any(named: 'name'),
+          parameters: any(named: 'parameters'),
+        )).thenAnswer((_) async => Future.value());
+
+    when(() => mockAnalytics.logScreenView(
+          screenName: any(named: 'screenName'),
+        )).thenAnswer((_) async => Future.value());
+  });
+
+  tearDown(() {
+    AnalyticsService.resetInstance();
+  });
+
+  tearDownAll(() {
+    clearFirebaseMocks();
   });
 
   Widget makeTestableWidget(Widget body) {
