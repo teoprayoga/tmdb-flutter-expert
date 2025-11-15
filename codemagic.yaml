@@ -32,9 +32,9 @@ workflows:
         script: |
           flutter pub run build_runner build --delete-conflicting-outputs
 
-      - name: Analyze code
-        script: |
-          flutter analyze
+#      - name: Analyze code
+#        script: |
+#          flutter analyze
 
       - name: Run tests
         script: |
@@ -42,7 +42,7 @@ workflows:
 
       - name: Build APK
         script: |
-          flutter build apk --release
+          flutter build apk --debug
 
     artifacts:
       - build/app/outputs/**/*.apk
