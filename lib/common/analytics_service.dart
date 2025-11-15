@@ -2,12 +2,32 @@ import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 
 class AnalyticsService {
-  final FirebaseAnalytics _analytics = FirebaseAnalytics.instance;
-  final FirebaseCrashlytics _crashlytics = FirebaseCrashlytics.instance;
+  final FirebaseAnalytics _analytics;
+  final FirebaseCrashlytics _crashlytics;
 
-  static final AnalyticsService _instance = AnalyticsService._internal();
-  factory AnalyticsService() => _instance;
-  AnalyticsService._internal();
+  static AnalyticsService? _instance;
+
+  factory AnalyticsService({
+    FirebaseAnalytics? analytics,
+    FirebaseCrashlytics? crashlytics,
+  }) {
+    _instance ??= AnalyticsService._internal(
+      analytics: analytics ?? FirebaseAnalytics.instance,
+      crashlytics: crashlytics ?? FirebaseCrashlytics.instance,
+    );
+    return _instance!;
+  }
+
+  AnalyticsService._internal({
+    required FirebaseAnalytics analytics,
+    required FirebaseCrashlytics crashlytics,
+  })  : _analytics = analytics,
+        _crashlytics = crashlytics;
+
+  // For testing purposes - allows resetting the singleton
+  static void resetInstance() {
+    _instance = null;
+  }
 
   // Analytics Events
   Future<void> logMovieView(int movieId, String movieTitle) async {
