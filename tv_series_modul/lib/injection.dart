@@ -1,7 +1,7 @@
 import 'package:get_it/get_it.dart';
 import 'package:http/http.dart' as http;
-import 'package:http_interceptor_plus/http_interceptor_plus.dart';
 
+import 'common/ssl_pinning_helper.dart';
 import 'data/datasources/db/database_helper.dart' as tv_db;
 import 'data/datasources/tv_series_local_data_source.dart';
 import 'data/datasources/tv_series_remote_data_source.dart';
@@ -24,7 +24,7 @@ import 'presentation/bloc/watchlist_tv_series_bloc.dart';
 
 final locator = GetIt.instance;
 
-void init({GetIt? l}) {
+Future<void> init({GetIt? l}) async {
   var locator = l ?? GetIt.instance;
 
   // BLoC
@@ -86,6 +86,7 @@ void init({GetIt? l}) {
   // Helper
   locator.registerLazySingleton<tv_db.DatabaseHelper>(() => tv_db.DatabaseHelper());
 
-  // External
-  locator.registerLazySingleton(() => LoggingMiddleware(http.Client()) as http.Client);
+  // External - HTTP Client dengan SSL Pinning
+  final secureClient = await SslPinningHelper.createSecureClient();
+  locator.registerLazySingleton<http.Client>(() => secureClient);
 }

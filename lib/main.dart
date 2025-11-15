@@ -51,7 +51,8 @@ Future<void> main() async {
     return true;
   };
 
-  di.init();
+  // Initialize dependency injection dengan SSL Pinning
+  await di.init();
   runApp(MyApp());
 }
 
