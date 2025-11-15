@@ -101,6 +101,6 @@ class AnalyticsService {
 
   // Test crash (only for testing purposes)
   Future<void> testCrash() async {
-    await _crashlytics.crash();
+    _crashlytics.crash();
   }
 }
