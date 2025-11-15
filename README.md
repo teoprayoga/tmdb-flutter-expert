@@ -1,6 +1,10 @@
 # Ditonton TV Series
 
+[![Codemagic build status](https://api.codemagic.io/apps/<APP-ID>/status_badge.svg)](https://codemagic.io/apps/<APP-ID>/latest_build)
+
 Aplikasi Flutter untuk menampilkan daftar TV Series dengan fitur lengkap termasuk detail, pencarian, dan watchlist. Dibuat mengikuti Clean Architecture dan menggunakan BLoC untuk state management.
+
+> **Catatan**: Ganti `<APP-ID>` pada badge di atas dengan App ID dari Codemagic Anda setelah menghubungkan repository.
 
 ## Flutter versi: 3.24.4
 
@@ -171,6 +175,43 @@ Target minimum coverage adalah 70%. Proyek ini sudah memiliki:
 - ✅ BLoC tests dengan bloc_test
 - ⭐ Widget tests (opsional untuk nilai lebih tinggi)
 - ⭐ Integration tests (opsional untuk nilai lebih tinggi)
+
+## Continuous Integration
+
+Proyek ini menggunakan **CodeMagic** untuk Continuous Integration (CI) yang otomatis menjalankan:
+
+### Proses CI Otomatis
+- ✅ Install dependencies Flutter
+- ✅ Generate mock files untuk testing
+- ✅ Analyze kode dengan `flutter analyze`
+- ✅ Run semua tests dengan coverage
+- ✅ Build APK release
+- ✅ Notifikasi email untuk setiap build (sukses/gagal)
+
+### Trigger Build
+CI akan berjalan otomatis setiap ada:
+- Push kode ke repository
+- Pull request baru
+
+### Setup CodeMagic
+
+1. **Sign up/Login ke CodeMagic**: Kunjungi [codemagic.io](https://codemagic.io)
+2. **Connect Repository**: Hubungkan repository GitHub Anda
+3. **Select Project**: Pilih repository `tmdb-flutter-expert`
+4. **Configuration**: CodeMagic akan otomatis mendeteksi file `codemagic.yaml`
+5. **Update Badge**: Ganti `<APP-ID>` di README dengan App ID dari CodeMagic
+6. **Start Build**: Klik "Start new build" untuk menjalankan CI pertama kali
+
+### Mendapatkan App ID untuk Badge
+
+Setelah menghubungkan repository ke CodeMagic:
+1. Buka aplikasi di CodeMagic dashboard
+2. Klik pada Settings
+3. Cari "Status badge" section
+4. Copy App ID dari URL badge
+5. Update `<APP-ID>` di README.md dengan App ID tersebut
+
+Build status badge akan menampilkan status build terkini (passing/failing).
 
 ## Dependencies
 
