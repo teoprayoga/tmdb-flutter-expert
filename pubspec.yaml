@@ -40,6 +40,7 @@ dependencies:
     path: ./tv_series_modul
   flutter_bloc: ^8.1.6
   rxdart: ^0.27.7
+  firebase_core: ^4.2.1
 
 dev_dependencies:
   mockito: ^5.0.8
@@ -49,6 +50,7 @@ dev_dependencies:
     sdk: flutter
   mocktail: ^1.0.4
   bloc_test: ^9.1.7
+  change_app_package_name: ^1.5.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
