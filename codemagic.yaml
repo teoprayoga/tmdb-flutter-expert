@@ -9,7 +9,7 @@ workflows:
       cocoapods: default
       groups:
         - firebase
-      vars:
+      # vars:
         # FLUTTER_VERSION: "3.35.6"
 
     triggering:
